@@ -13,5 +13,21 @@ namespace Repository
         public BetRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
         }
+
+        public void CreateBet(Guid entryId, Bet bet)
+        {
+            bet.EntryId = entryId;
+            Create(bet);
+        }
+
+        public void DeleteBet(Bet bet) => Delete(bet);
+
+        public IEnumerable<Bet> GetAllBets(bool trackChanges)
+            => FindAll(trackChanges).ToList();
+
+        public Bet GetBetForEntry(Guid entryId, Guid id, bool trackChanges)
+            => FindByCondition(b => b.EntryId.Equals(entryId) && b.Id.Equals(id), trackChanges).SingleOrDefault();
+
+        public IEnumerable<Bet> GetBetsForEntry(Guid entryId, bool trackChanges) => FindByCondition(b => b.EntryId.Equals(entryId), trackChanges).ToList();
     }
 }

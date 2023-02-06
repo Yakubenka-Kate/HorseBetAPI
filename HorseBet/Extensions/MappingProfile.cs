@@ -9,7 +9,16 @@ namespace HorseBet.Extensions
         public MappingProfile()
         {
             CreateMap<Horse, HorseDto>();
-            CreateMap<HorseForCreation, Horse>();
+            CreateMap<HorseForCreationDto, Horse>();
+
+            CreateMap<Race, RaceDto>();
+            CreateMap<RaceForCreationDto, Race>();
+
+            CreateMap<Entry, EntryDto>();
+            CreateMap<EntryForManipulationsDto, Entry>();
+
+            CreateMap<Bet, BetDto>();
+            CreateMap<BetForManipulationsDto, Bet>();
         }
     }
 }

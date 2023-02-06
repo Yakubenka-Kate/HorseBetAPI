@@ -19,9 +19,9 @@ namespace Service
         public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper)
         {
             _horseService = new Lazy<IHorseService>(() => new HorseService(repositoryManager, logger, mapper));
-            _raceService = new Lazy<IRaceService>(() => new RaceService(repositoryManager, logger));
-            _entryService = new Lazy<IEntryService>(() => new EntryService(repositoryManager, logger));
-            _betService = new Lazy<IBetService>(() => new BetService(repositoryManager, logger));
+            _raceService = new Lazy<IRaceService>(() => new RaceService(repositoryManager, logger, mapper));
+            _entryService = new Lazy<IEntryService>(() => new EntryService(repositoryManager, logger, mapper));
+            _betService = new Lazy<IBetService>(() => new BetService(repositoryManager, logger, mapper));
         }
 
         public IHorseService HorseService => _horseService.Value;

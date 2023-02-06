@@ -1,5 +1,6 @@
 ﻿using Entities.Exceptions;
 using HorseBet.Models;
+using HorseBet.Presentation.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -35,15 +36,42 @@ namespace HorseBet.Presentation.Controllers
             return Ok(horse);
         }
 
-        [HttpPost]
-        public IActionResult CreateHorse([FromBody] HorseForCreation horse)
+        [HttpGet("collection")]
+        public IActionResult GetHorseCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
         {
-            if (horse == null)
+            var horses = _service.HorseService.GetByIds(ids, trackChanges: false);
+
+            return Ok(horses);
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateHorse([FromBody] HorseForCreationDto horse)
+        {
+            if (horse is null)
                 return BadRequest("Horse is null");
 
             var createdHorse = _service.HorseService.CreateHorse(horse);
 
             return CreatedAtRoute(new { id = createdHorse.Id },createdHorse);
         }
+
+        [HttpPost("collection")]
+        public IActionResult CreateHorseCollection([FromBody] IEnumerable<HorseForCreationDto> horseCollection)
+        {
+            var result = _service.HorseService.CreateHorsesCollection(horseCollection);
+
+            return CreatedAtRoute(new { result.ids }, result.horses );
+        }
+
+        [HttpDelete("{id:guid}")]
+        public IActionResult DeleteHorse(Guid id)
+        {
+            _service.HorseService.DeleteHorse(id, trackChanges: false);
+
+            return NoContent();
+        }
+
     }
+
 }

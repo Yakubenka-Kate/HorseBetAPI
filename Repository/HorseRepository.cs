@@ -16,8 +16,13 @@ namespace Repository
 
         public void CreateHorse(Horse horse) => Create(horse);
 
+        public void DeleteHorse(Horse horse) => Delete(horse);
+
         public IEnumerable<Horse> GetAllHorses(bool trackChanges) => 
             FindAll(trackChanges).ToList();
+
+        public IEnumerable<Horse> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+            => FindByCondition(h => ids.Contains(h.Id), trackChanges).ToList();
 
         public Horse GetHorse(Guid horseId, bool trackChanges) =>
             FindByCondition(e => e.Id.Equals(horseId), trackChanges).SingleOrDefault();

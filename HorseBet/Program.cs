@@ -33,10 +33,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options => //?
 
 var app = builder.Build();
 
-var logger = app.Services.GetRequiredService<ILoggerManager>();
-
-if (app.Environment.IsProduction())
-    app.UseHsts();
+//if (app.Environment.IsProduction())
+//    app.UseHsts();
 
 if (app.Environment.IsDevelopment())
 {
@@ -47,6 +45,7 @@ if (app.Environment.IsDevelopment())
 else
     app.UseHsts();
 
+var logger = app.Services.GetRequiredService<ILoggerManager>();
 app.ConfigureExceptionHandler(logger);
 
 

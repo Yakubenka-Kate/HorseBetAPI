@@ -25,7 +25,7 @@ namespace Service
             _mapper = mapper;
         }
 
-        public HorseDto CreateHorse(HorseForCreation horse)
+        public HorseDto CreateHorse(HorseForCreationDto horse)
         {
             var horseEntity = _mapper.Map<Horse>(horse);
 
@@ -37,6 +37,38 @@ namespace Service
             return horseToReturn;
         }
 
+        public (IEnumerable<HorseDto> horses, string ids) CreateHorsesCollection(IEnumerable<HorseForCreationDto> horseCollection)
+        {
+            if (horseCollection is null)
+                throw new HorseCollectionBadRequest();
+
+            var horseEntities = _mapper.Map<IEnumerable<Horse>>(horseCollection);
+            foreach (var horse in horseEntities)
+            {
+                _repository.Horse.CreateHorse(horse);
+            }
+
+            _repository.Save();
+
+            var horseCollectionToReturn = _mapper.Map<IEnumerable<HorseDto>>(horseEntities);
+
+            var ids = string.Join(",", horseCollectionToReturn.Select(h => h.Id));
+
+            return (horses: horseCollectionToReturn, ids: ids);
+
+        }
+
+        public void DeleteHorse(Guid horseId, bool trackChanges)
+        {
+            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+
+            if (horse is null)
+                throw new HorseNotFoundException(horseId);
+
+            _repository.Horse.DeleteHorse(horse);
+            _repository.Save();
+        }
+
         public IEnumerable<HorseDto> GetAllHorses(bool trackChanges)
         {
             var horses = _repository.Horse.GetAllHorses(trackChanges);
@@ -44,6 +76,21 @@ namespace Service
             var horsesDto = _mapper.Map<IEnumerable<HorseDto>>(horses);
 
             return horsesDto;
+        }
+
+        public IEnumerable<HorseDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+        {
+            if (ids is null)
+                throw new IdParametersBadRequestException();
+
+            var horseEntities = _repository.Horse.GetByIds(ids, trackChanges);
+
+            if(ids.Count() != horseEntities.Count())
+                throw new CollectionByIdsBadRequestException();
+
+            var horsesToReturn = _mapper.Map<IEnumerable<HorseDto>>(horseEntities);
+
+            return horsesToReturn;
         }
 
         public Horse GetHorse(Guid horseId, bool trackChanges)
