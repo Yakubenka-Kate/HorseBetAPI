@@ -12,7 +12,11 @@ namespace HorseBet.Models
         [Range(5, 15)]
         public int CountHorses { get; set; }
 
+        [Required(ErrorMessage = "Date is a required field")]
         public DateTime Date { get; set; }
+
+        [Required(ErrorMessage = "Competition Name is a required field")]
+        [MaxLength(30, ErrorMessage = "Maximum length for the Competition Name is 30 characters.")]
         public string? CompetitionName { get; set; }
 
         public ICollection<Entry>? Entries { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using HorseBet.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +19,14 @@ namespace Repository
 
         public void DeleteHorse(Horse horse) => Delete(horse);
 
-        public IEnumerable<Horse> GetAllHorses(bool trackChanges) => 
-            FindAll(trackChanges).ToList();
+        public async Task<IEnumerable<Horse>> GetAllHorsesAsync(bool trackChanges) => 
+            await FindAll(trackChanges).ToListAsync();
 
-        public IEnumerable<Horse> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
-            => FindByCondition(h => ids.Contains(h.Id), trackChanges).ToList();
+        public async Task<IEnumerable<Horse>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
+            => await FindByCondition(h => ids.Contains(h.Id), trackChanges).ToListAsync();
 
-        public Horse GetHorse(Guid horseId, bool trackChanges) =>
-            FindByCondition(e => e.Id.Equals(horseId), trackChanges).SingleOrDefault();
+        public async Task<Horse> GetHorseAsync(Guid horseId, bool trackChanges) =>
+            await FindByCondition(e => e.Id.Equals(horseId), trackChanges).SingleOrDefaultAsync();
 
     }
 }

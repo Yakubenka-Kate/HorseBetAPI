@@ -21,53 +21,55 @@ namespace HorseBet.Presentation.Controllers
         public HorseController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        public IActionResult GetHorses()
+        public async Task<IActionResult> GetHorses()
         {
-            var horses = _service.HorseService.GetAllHorses(trackChanges: false);
+            var horses = await _service.HorseService.GetAllHorsesAsync(trackChanges: false);
 
             return Ok(horses);
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetHorse(Guid id)
+        public async Task<IActionResult> GetHorse(Guid id)
         {
-            var horse = _service.HorseService.GetHorse(id, trackChanges: false);
+            var horse = await _service.HorseService.GetHorseAsync(id, trackChanges: false);
 
             return Ok(horse);
         }
 
         [HttpGet("collection")]
-        public IActionResult GetHorseCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
+        public async Task<IActionResult> GetHorseCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
         {
-            var horses = _service.HorseService.GetByIds(ids, trackChanges: false);
+            var horses = await _service.HorseService.GetByIdsAsync(ids, trackChanges: false);
 
             return Ok(horses);
         }
 
 
         [HttpPost]
-        public IActionResult CreateHorse([FromBody] HorseForCreationDto horse)
+        public async Task<IActionResult> CreateHorse([FromBody] HorseManipulationDto horse)
         {
             if (horse is null)
                 return BadRequest("Horse is null");
 
-            var createdHorse = _service.HorseService.CreateHorse(horse);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            var createdHorse = await _service.HorseService.CreateHorseAsync(horse);
 
             return CreatedAtRoute(new { id = createdHorse.Id },createdHorse);
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateHorseCollection([FromBody] IEnumerable<HorseForCreationDto> horseCollection)
+        public async Task<IActionResult> CreateHorseCollection([FromBody] IEnumerable<HorseManipulationDto> horseCollection)
         {
-            var result = _service.HorseService.CreateHorsesCollection(horseCollection);
-
-            return CreatedAtRoute(new { result.ids }, result.horses );
+            var result = await _service.HorseService.CreateHorsesCollectionAsync(horseCollection);
+            return CreatedAtRoute(new { result.ids }, result.horses);
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteHorse(Guid id)
+        public async Task<IActionResult> DeleteHorse(Guid id)
         {
-            _service.HorseService.DeleteHorse(id, trackChanges: false);
+            await _service.HorseService.DeleteHorseAsync(id, trackChanges: false);
 
             return NoContent();
         }

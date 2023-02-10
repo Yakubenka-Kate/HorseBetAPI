@@ -8,10 +8,10 @@ namespace HorseBet.Models
         [Column("BetId")]
         public Guid Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Bet position is a required field")]
         public int BetPosition { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Bet position is a required field")]
         public double Rate { get; set; }
 
         public string? Result { get; set; }

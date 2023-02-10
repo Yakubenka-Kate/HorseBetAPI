@@ -13,6 +13,6 @@ namespace Contracts
         IEntryRepository Entry{ get; }
         IBetRepository Bet{ get; }
 
-        void Save();
+        Task SaveAsync();
     }
 }

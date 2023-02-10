@@ -18,28 +18,28 @@ namespace HorseBet.Presentation.Controllers
         public RaceController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        public IActionResult GetRaces()
+        public async Task<IActionResult> GetRaces()
         {
-            var races = _service.RaceService.GetAllRaces(trackChanges: false);
+            var races = await _service.RaceService.GetAllRacesAsync(trackChanges: false);
 
             return Ok(races);
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetRace(Guid id)
+        public async Task<IActionResult> GetRace(Guid id)
         {
-            var race = _service.RaceService.GetRace(id, trackChanges: false);
+            var race = await _service.RaceService.GetRaceAsync(id, trackChanges: false);
 
             return Ok(race);
         }
 
         [HttpPost]
-        public IActionResult CreateHorse([FromBody] RaceForCreationDto race)
+        public async Task<IActionResult> CreateHorse([FromBody] RaceManipulationDto race)
         {
             if (race is null)
                 return BadRequest("Horse is null");
 
-            var createdRace = _service.RaceService.CreateRace(race);
+            var createdRace = await _service.RaceService.CreateRaceAsync(race);
 
             return CreatedAtRoute(new { id = createdRace.Id }, createdRace);
         }

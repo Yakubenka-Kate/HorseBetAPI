@@ -25,14 +25,14 @@ namespace Service
             _mapper = mapper;
         }
 
-        public EntryDto CreateEntry(Guid raceId, Guid horseId, EntryForManipulationsDto entryForCreation, bool trackChanges)
+        public async Task<EntryDto> CreateEntryAsync(Guid raceId, Guid horseId, EntryManipulationDto entryForCreation, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
             
             if (horse is null)
                 throw new HorseNotFoundException(horseId);
 
-            var race = _repository.Race.GetRace(raceId, trackChanges);
+            var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
 
             if (race is null)
                 throw new RaceNotFoundException(raceId);
@@ -40,51 +40,51 @@ namespace Service
             var entryEntity = _mapper.Map<Entry>(entryForCreation);
 
             _repository.Entry.CreateEntry(raceId, horseId, entryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var raceToReturn = _mapper.Map<EntryDto>(entryEntity);
 
             return raceToReturn;
         }
 
-        public void DeleteEntryForHorse(Guid horseId, Guid id, bool trackChanges)
+        public async Task DeleteEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
                 throw new HorseNotFoundException(horseId);
 
-            var entryForHorse = _repository.Entry.GetEntryForHorse(horseId, id, trackChanges);
+            var entryForHorse = await _repository.Entry.GetEntryForHorseAsync(horseId, id, trackChanges);
 
             if (entryForHorse is null)
                 throw new EntryNotFoundException(id);
 
             _repository.Entry.DeleteEntry(entryForHorse);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<Entry> GetAllEntries(bool trackChanges)
+        public async Task<IEnumerable<Entry>> GetAllEntriesAsync(bool trackChanges)
         {
-            var entries = _repository.Entry.GetAllEntries(trackChanges);
+            var entries = await _repository.Entry.GetAllEntriesAsync(trackChanges);
 
             return entries;
         }
 
-        public IEnumerable<Entry> GetEntriesForHorse(Guid horseId, bool trackChanges)
+        public async Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
                 throw new HorseNotFoundException(horseId);
 
-            var entries = _repository.Entry.GetEntriesForHorse(horseId, trackChanges);
+            var entries = await _repository.Entry.GetEntriesForHorseAsync(horseId, trackChanges);
 
             return entries;
         }
 
-        public Entry GetEntryById(Guid id, bool trackChanges)
+        public async Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(id, trackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(id, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(id);
@@ -92,14 +92,14 @@ namespace Service
             return entry;
         }
 
-        public Entry GetEntryForHorse(Guid horseId, Guid id, bool trackChanges)
+        public async Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if(horse is null)
                 throw new HorseNotFoundException(horseId);
 
-            var entry = _repository.Entry.GetEntryForHorse(horseId, id, trackChanges);
+            var entry = await _repository.Entry.GetEntryForHorseAsync(horseId, id, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(id);
@@ -107,21 +107,21 @@ namespace Service
             return entry;
         }
 
-        public void UpdateEntryForHorse(Guid horseId, Guid id, EntryForManipulationsDto entryForUpdate, 
+        public async Task UpdateEntryForHorseAsync(Guid horseId, Guid id, EntryManipulationDto entryForUpdate, 
             bool horseTrackChanges, bool entryTrackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, horseTrackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, horseTrackChanges);
 
             if (horse is null)
                 throw new HorseNotFoundException(horseId);
 
-            var entryEntity = _repository.Entry.GetEntryForHorse(horseId, id, entryTrackChanges);
+            var entryEntity = await _repository.Entry.GetEntryForHorseAsync(horseId, id, entryTrackChanges);
 
             if (entryEntity is null)
                 throw new EntryNotFoundException(id);
 
             _mapper.Map(entryForUpdate, entryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
     }

@@ -20,7 +20,7 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet]
         public IActionResult GetBets()
         {
-            var bets = _service.BetService.GetAllBets(trackChanges: false);
+            var bets = _service.BetService.GetAllBetsAsync(trackChanges: false);
 
             return Ok(bets);
         }
@@ -28,7 +28,7 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetBet(Guid entryId, Guid id)
         {
-            var bet = _service.BetService.GetBetForEntry(entryId, id, trackChanges: false);
+            var bet = _service.BetService.GetBetForEntryAsync(entryId, id, trackChanges: false);
 
             return Ok(bet);
         }
@@ -36,18 +36,18 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet("{entryId}/entries")]
         public IActionResult GetBetsForEntry(Guid entryId)
         {
-            var bets = _service.BetService.GetBetsForEntry(entryId, trackChanges: false);
+            var bets = _service.BetService.GetBetsForEntryAsync(entryId, trackChanges: false);
 
             return Ok(bets);
         }
 
         [HttpPost]
-        public IActionResult CreateBet( Guid entryId, [FromBody] BetForManipulationsDto bet)
+        public IActionResult CreateBet( Guid entryId, [FromBody] BetManipulationDto bet)
         {
             if (bet is null)
                 return BadRequest("Bet is null");
 
-            var createdBet = _service.BetService.CreateBet(entryId, bet, trackChanges: false);
+            var createdBet = _service.BetService.CreateBetAsync(entryId, bet, trackChanges: false);
 
             return CreatedAtRoute(new { entryId, id = createdBet.Id }, createdBet);
         }
@@ -55,18 +55,18 @@ namespace HorseBet.Presentation.Controllers
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteBetForEntry(Guid entryId, Guid id)
         {
-            _service.BetService.DeleteBetForEntry(entryId, id, trackChanges: false);
+            _service.BetService.DeleteBetForEntryAsync(entryId, id, trackChanges: false);
 
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateBetForEntry(Guid entryId, Guid id, [FromBody] BetForManipulationsDto bet)
+        public IActionResult UpdateBetForEntry(Guid entryId, Guid id, [FromBody] BetManipulationDto bet)
         {
             if (bet is null)
                 return BadRequest("Entry is null");
 
-            _service.BetService.UpdateBetForEntry(entryId, id, bet, entryTrackChanges: false, betTrackChanges: true);
+            _service.BetService.UpdateBetForEntryAsync(entryId, id, bet, entryTrackChanges: false, betTrackChanges: true);
 
             return NoContent();
         }

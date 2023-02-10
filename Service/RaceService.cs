@@ -25,30 +25,30 @@ namespace Service
             _mapper = mapper;
         }
 
-        public RaceDto CreateRace(RaceForCreationDto race)
+        public async Task<RaceDto> CreateRaceAsync(RaceManipulationDto race)
         {
             var raceEntity = _mapper.Map<Race>(race);
 
             _repository.Race.CreateRace(raceEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var raceToReturn = _mapper.Map<RaceDto>(raceEntity);
 
             return raceToReturn;
         }
 
-        public IEnumerable<RaceDto> GetAllRaces(bool trackChanges)
+        public async Task<IEnumerable<RaceDto>> GetAllRacesAsync(bool trackChanges)
         {
-            var races = _repository.Race.GetAllRaces(trackChanges);
+            var races = await _repository.Race.GetAllRacesAsync(trackChanges);
 
             var racesDto = _mapper.Map<IEnumerable<RaceDto>>(races);
 
             return racesDto;
         }
 
-        public Race GetRace(Guid raceId, bool trackChanges)
+        public async Task<Race> GetRaceAsync(Guid raceId, bool trackChanges)
         {
-            var race = _repository.Race.GetRace(raceId, trackChanges);
+            var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
 
             if (race is null)
                 throw new RaceNotFoundException(raceId);

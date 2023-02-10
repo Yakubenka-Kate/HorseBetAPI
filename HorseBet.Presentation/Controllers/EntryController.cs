@@ -20,7 +20,7 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet]
         public IActionResult GetEntries()
         {
-            var entries = _service.EntryService.GetAllEntries(trackChanges: false);
+            var entries = _service.EntryService.GetAllEntriesAsync(trackChanges: false);
 
             return Ok(entries);
         }
@@ -28,7 +28,7 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetEntry(Guid horseId, Guid id)
         {
-            var entry = _service.EntryService.GetEntryForHorse(horseId, id,  trackChanges: false);
+            var entry = _service.EntryService.GetEntryForHorseAsync(horseId, id,  trackChanges: false);
 
             return Ok(entry);
         }
@@ -36,18 +36,18 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet("{horseId}/horses")]
         public IActionResult GetEntriesForHorse(Guid horseId)
         {
-            var entries = _service.EntryService.GetEntriesForHorse(horseId, trackChanges: false);
+            var entries = _service.EntryService.GetEntriesForHorseAsync(horseId, trackChanges: false);
 
             return Ok(entries);
         }
 
         [HttpPost]
-        public IActionResult CreateEntry(Guid raceId, Guid horseId, [FromBody] EntryForManipulationsDto entry)
+        public IActionResult CreateEntry(Guid raceId, Guid horseId, [FromBody] EntryManipulationDto entry)
         {
             if (entry is null)
                 return BadRequest("Entry is null");
 
-            var createdEntry = _service.EntryService.CreateEntry(raceId, horseId, entry, trackChanges: false);
+            var createdEntry = _service.EntryService.CreateEntryAsync(raceId, horseId, entry, trackChanges: false);
 
             return CreatedAtRoute(new { raceId, horseId, id = createdEntry.Id }, createdEntry);
         }
@@ -55,18 +55,18 @@ namespace HorseBet.Presentation.Controllers
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteEntryForHorse(Guid horseId, Guid id)
         {
-            _service.EntryService.DeleteEntryForHorse(horseId, id, trackChanges: false);
+            _service.EntryService.DeleteEntryForHorseAsync(horseId, id, trackChanges: false);
 
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateEntryForHorse(Guid horseId, Guid id, [FromBody] EntryForManipulationsDto entry)
+        public IActionResult UpdateEntryForHorse(Guid horseId, Guid id, [FromBody] EntryManipulationDto entry)
         {
             if (entry is null)
                 return BadRequest("Entry is null");
 
-            _service.EntryService.UpdateEntryForHorse(horseId, id, entry, horseTrackChanges: false, entryTrackChanges: true);
+            _service.EntryService.UpdateEntryForHorseAsync(horseId, id, entry, horseTrackChanges: false, entryTrackChanges: true);
 
             return NoContent();
         }

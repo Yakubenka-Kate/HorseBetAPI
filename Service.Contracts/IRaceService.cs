@@ -10,8 +10,8 @@ namespace Service.Contracts
 {
     public interface IRaceService
     {
-        IEnumerable<RaceDto> GetAllRaces(bool trackChanges);
-        Race GetRace(Guid raceId, bool trackChanges);
-        RaceDto CreateRace(RaceForCreationDto race);
+        Task<IEnumerable<RaceDto>> GetAllRacesAsync(bool trackChanges);
+        Task<Race> GetRaceAsync(Guid raceId, bool trackChanges);
+        Task<RaceDto> CreateRaceAsync(RaceManipulationDto race);
     }
 }

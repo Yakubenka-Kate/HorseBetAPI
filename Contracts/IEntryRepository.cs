@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IEntryRepository
     {
-        IEnumerable<Entry> GetAllEntries(bool trackChanges);
-        Entry GetEntryById(Guid id, bool trackChanges);
-        Entry GetEntryForHorse(Guid horseId, Guid id, bool trackChanges);
-        IEnumerable<Entry> GetEntriesForHorse(Guid horseId, bool trackChanges);
+        Task<IEnumerable<Entry>> GetAllEntriesAsync(bool trackChanges);
+        Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges);
+        Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges);
+        Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges);
         void CreateEntry(Guid raceId, Guid horseId, Entry entry);
         void DeleteEntry(Entry entry);
 

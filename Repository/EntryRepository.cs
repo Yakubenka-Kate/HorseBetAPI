@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using HorseBet.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,16 @@ namespace Repository
 
         public void DeleteEntry(Entry entry) => Delete(entry);
 
-        public IEnumerable<Entry> GetAllEntries(bool trackChanges) => 
-            FindAll(trackChanges).ToList();
+        public async Task<IEnumerable<Entry>> GetAllEntriesAsync(bool trackChanges) => 
+            await FindAll(trackChanges).ToListAsync();
 
-        public IEnumerable<Entry> GetEntriesForHorse(Guid horseId, bool trackChanges) => 
-            FindByCondition(e => e.HorseId.Equals(horseId), trackChanges).ToList();
+        public async Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges) => 
+            await FindByCondition(e => e.HorseId.Equals(horseId), trackChanges).ToListAsync();
 
-        public Entry GetEntryById(Guid id, bool trackChanges)
-            => FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges)
+            => await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
-        public Entry GetEntryForHorse(Guid horseId, Guid id, bool trackChanges) => 
-            FindByCondition(e => e.HorseId.Equals(horseId) && e.Id.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges) => 
+            await FindByCondition(e => e.HorseId.Equals(horseId) && e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
     }
 }

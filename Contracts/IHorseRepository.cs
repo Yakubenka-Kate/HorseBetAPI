@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IHorseRepository
     {
-        IEnumerable<Horse> GetAllHorses(bool trackChanges);
-        Horse GetHorse(Guid horseId, bool trackChanges);
+        Task<IEnumerable<Horse>> GetAllHorsesAsync(bool trackChanges);
+        Task<Horse> GetHorseAsync(Guid horseId, bool trackChanges);
         void CreateHorse(Horse horse);
-        IEnumerable<Horse> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+        Task<IEnumerable<Horse>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
         void DeleteHorse(Horse horse);
     }
 }

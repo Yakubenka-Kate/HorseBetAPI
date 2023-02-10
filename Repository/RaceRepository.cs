@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using HorseBet.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace Repository
         public void CreateRace(Race race) 
             => Create(race);
 
-        public IEnumerable<Race> GetAllRaces(bool trackChanges) 
-            => FindAll(trackChanges).ToList();
+        public async Task<IEnumerable<Race>> GetAllRacesAsync(bool trackChanges) 
+            => await FindAll(trackChanges).ToListAsync();
 
-        public Race GetRace(Guid raceId, bool trackChanges)
-            => FindByCondition(r => r.Id.Equals(raceId), trackChanges).SingleOrDefault();
+        public async Task<Race> GetRaceAsync(Guid raceId, bool trackChanges)
+            => await FindByCondition(r => r.Id.Equals(raceId), trackChanges).SingleOrDefaultAsync();
     }
 }

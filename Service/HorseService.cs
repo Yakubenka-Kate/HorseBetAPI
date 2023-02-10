@@ -25,19 +25,19 @@ namespace Service
             _mapper = mapper;
         }
 
-        public HorseDto CreateHorse(HorseForCreationDto horse)
+        public async Task<HorseDto> CreateHorseAsync(HorseManipulationDto horse)
         {
             var horseEntity = _mapper.Map<Horse>(horse);
 
             _repository.Horse.CreateHorse(horseEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var horseToReturn = _mapper.Map<HorseDto>(horseEntity);
 
             return horseToReturn;
         }
 
-        public (IEnumerable<HorseDto> horses, string ids) CreateHorsesCollection(IEnumerable<HorseForCreationDto> horseCollection)
+        public async Task<(IEnumerable<HorseDto> horses, string ids)> CreateHorsesCollectionAsync(IEnumerable<HorseManipulationDto> horseCollection)
         {
             if (horseCollection is null)
                 throw new HorseCollectionBadRequest();
@@ -48,7 +48,7 @@ namespace Service
                 _repository.Horse.CreateHorse(horse);
             }
 
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var horseCollectionToReturn = _mapper.Map<IEnumerable<HorseDto>>(horseEntities);
 
@@ -58,32 +58,32 @@ namespace Service
 
         }
 
-        public void DeleteHorse(Guid horseId, bool trackChanges)
+        public async Task DeleteHorseAsync(Guid horseId, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
                 throw new HorseNotFoundException(horseId);
 
             _repository.Horse.DeleteHorse(horse);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<HorseDto> GetAllHorses(bool trackChanges)
+        public async Task<IEnumerable<HorseDto>> GetAllHorsesAsync(bool trackChanges)
         {
-            var horses = _repository.Horse.GetAllHorses(trackChanges);
+            var horses = await _repository.Horse.GetAllHorsesAsync(trackChanges);
 
             var horsesDto = _mapper.Map<IEnumerable<HorseDto>>(horses);
 
             return horsesDto;
         }
 
-        public IEnumerable<HorseDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+        public async Task<IEnumerable<HorseDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
         {
             if (ids is null)
                 throw new IdParametersBadRequestException();
 
-            var horseEntities = _repository.Horse.GetByIds(ids, trackChanges);
+            var horseEntities = await _repository.Horse.GetByIdsAsync(ids, trackChanges);
 
             if(ids.Count() != horseEntities.Count())
                 throw new CollectionByIdsBadRequestException();
@@ -93,9 +93,9 @@ namespace Service
             return horsesToReturn;
         }
 
-        public Horse GetHorse(Guid horseId, bool trackChanges)
+        public async Task<Horse> GetHorseAsync(Guid horseId, bool trackChanges)
         {
-            var horse = _repository.Horse.GetHorse(horseId, trackChanges);
+            var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)               
                 throw new HorseNotFoundException(horseId);

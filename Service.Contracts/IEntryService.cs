@@ -10,12 +10,12 @@ namespace Service.Contracts
 {
     public interface IEntryService
     {
-        IEnumerable<Entry> GetAllEntries(bool trackChanges);
-        Entry GetEntryById(Guid id, bool trackChanges);
-        Entry GetEntryForHorse(Guid horseId, Guid id, bool trackChanges);
-        IEnumerable<Entry> GetEntriesForHorse(Guid horseId, bool trackChanges);
-        EntryDto CreateEntry(Guid raceId, Guid horseId, EntryForManipulationsDto entryForCreation, bool trackChanges);
-        void DeleteEntryForHorse(Guid horseId, Guid id, bool trackChanges);
-        void UpdateEntryForHorse(Guid horseId, Guid id, EntryForManipulationsDto entryForUpdate, bool horseTrackChanges, bool entryTrackChanges);
+        Task<IEnumerable<Entry>> GetAllEntriesAsync(bool trackChanges);
+        Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges);
+        Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges);
+        Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges);
+        Task<EntryDto> CreateEntryAsync(Guid raceId, Guid horseId, EntryManipulationDto entryForCreation, bool trackChanges);
+        Task DeleteEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges);
+        Task UpdateEntryForHorseAsync(Guid horseId, Guid id, EntryManipulationDto entryForUpdate, bool horseTrackChanges, bool entryTrackChanges);
     }
 }

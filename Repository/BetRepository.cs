@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using HorseBet.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,13 @@ namespace Repository
 
         public void DeleteBet(Bet bet) => Delete(bet);
 
-        public IEnumerable<Bet> GetAllBets(bool trackChanges)
-            => FindAll(trackChanges).ToList();
+        public async Task<IEnumerable<Bet>> GetAllBetsAsunc(bool trackChanges)
+            => await FindAll(trackChanges).ToListAsync();
 
-        public Bet GetBetForEntry(Guid entryId, Guid id, bool trackChanges)
-            => FindByCondition(b => b.EntryId.Equals(entryId) && b.Id.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Bet> GetBetForEntryAsunc(Guid entryId, Guid id, bool trackChanges)
+            => await FindByCondition(b => b.EntryId.Equals(entryId) && b.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
-        public IEnumerable<Bet> GetBetsForEntry(Guid entryId, bool trackChanges) => FindByCondition(b => b.EntryId.Equals(entryId), trackChanges).ToList();
+        public async Task<IEnumerable<Bet>> GetBetsForEntryAsunc(Guid entryId, bool trackChanges) 
+            => await FindByCondition(b => b.EntryId.Equals(entryId), trackChanges).ToListAsync();
     }
 }

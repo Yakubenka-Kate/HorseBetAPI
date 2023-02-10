@@ -25,9 +25,9 @@ namespace Service
             _mapper = mapper;
         }
 
-        public BetDto CreateBet(Guid entryId, BetForManipulationsDto betForCreation, bool trackChanges)
+        public async Task<BetDto> CreateBetAsync(Guid entryId, BetManipulationDto betForCreation, bool trackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(entryId, trackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(entryId, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(entryId);
@@ -35,44 +35,44 @@ namespace Service
             var betEntity = _mapper.Map<Bet>(betForCreation);
 
             _repository.Bet.CreateBet(entryId, betEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var betToReturn = _mapper.Map<BetDto>(betEntity);
 
             return betToReturn;
         }
 
-        public void DeleteBetForEntry(Guid entryId, Guid id, bool trackChanges)
+        public async Task DeleteBetForEntryAsync(Guid entryId, Guid id, bool trackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(entryId, trackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(entryId, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(entryId);
 
-            var betForEntry = _repository.Bet.GetBetForEntry(entryId, id, trackChanges);
+            var betForEntry = await _repository.Bet.GetBetForEntryAsunc(entryId, id, trackChanges);
 
             if (betForEntry is null)
                 throw new BetNotFoundException(id);
 
             _repository.Bet.DeleteBet(betForEntry);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<Bet> GetAllBets(bool trackChanges)
+        public async Task<IEnumerable<Bet>> GetAllBetsAsync(bool trackChanges)
         {
-            var bets = _repository.Bet.GetAllBets(trackChanges);
+            var bets = await _repository.Bet.GetAllBetsAsunc(trackChanges);
 
             return bets;
         }
 
-        public Bet GetBetForEntry(Guid entryId, Guid id, bool trackChanges)
+        public async Task<Bet> GetBetForEntryAsync(Guid entryId, Guid id, bool trackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(entryId, trackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(entryId, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(entryId);
 
-            var bet = _repository.Bet.GetBetForEntry(entryId, id, trackChanges);
+            var bet = await _repository.Bet.GetBetForEntryAsunc(entryId, id, trackChanges);
 
             if (bet is null)
                 throw new BetNotFoundException(id);
@@ -80,32 +80,32 @@ namespace Service
             return bet;
         }
 
-        public IEnumerable<Bet> GetBetsForEntry(Guid entryId, bool trackChanges)
+        public async Task<IEnumerable<Bet>> GetBetsForEntryAsync(Guid entryId, bool trackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(entryId, trackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(entryId, trackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(entryId);
 
-            var bets = _repository.Bet.GetBetsForEntry(entryId, trackChanges);
+            var bets = await _repository.Bet.GetBetsForEntryAsunc(entryId, trackChanges);
 
             return bets;
         }
 
-        public void UpdateBetForEntry(Guid entryId, Guid id, BetForManipulationsDto betForUpdate, bool entryTrackChanges, bool betTrackChanges)
+        public async Task UpdateBetForEntryAsync(Guid entryId, Guid id, BetManipulationDto betForUpdate, bool entryTrackChanges, bool betTrackChanges)
         {
-            var entry = _repository.Entry.GetEntryById(entryId, entryTrackChanges);
+            var entry = await _repository.Entry.GetEntryByIdAsync(entryId, entryTrackChanges);
 
             if (entry is null)
                 throw new EntryNotFoundException(entryId);
 
-            var betEntity = _repository.Bet.GetBetForEntry(entryId, id, betTrackChanges);
+            var betEntity = await _repository.Bet.GetBetForEntryAsunc(entryId, id, betTrackChanges);
 
             if (betEntity is null)
                 throw new BetNotFoundException(id);
 
             _mapper.Map(betForUpdate, betEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
     }

@@ -10,12 +10,12 @@ namespace Service.Contracts
 {
     public interface IHorseService
     {
-        IEnumerable<HorseDto> GetAllHorses(bool trackChanges);
-        Horse GetHorse(Guid horseId, bool trackChanges);
-        HorseDto CreateHorse(HorseForCreationDto horse);
-        IEnumerable<HorseDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
-        (IEnumerable<HorseDto> horses, string ids) CreateHorsesCollection(IEnumerable<HorseForCreationDto> horseCollection);
-        void DeleteHorse(Guid horseId, bool trackChanges);
+        Task<IEnumerable<HorseDto>> GetAllHorsesAsync(bool trackChanges);
+        Task<Horse> GetHorseAsync(Guid horseId, bool trackChanges);
+        Task<HorseDto> CreateHorseAsync(HorseManipulationDto horse);
+        Task<IEnumerable<HorseDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
+        Task<(IEnumerable<HorseDto> horses, string ids)> CreateHorsesCollectionAsync(IEnumerable<HorseManipulationDto> horseCollection);
+        Task DeleteHorseAsync(Guid horseId, bool trackChanges);
     }
     
 }
