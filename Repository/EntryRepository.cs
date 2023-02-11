@@ -30,8 +30,8 @@ namespace Repository
         public async Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges) => 
             await FindByCondition(e => e.HorseId.Equals(horseId), trackChanges).ToListAsync();
 
-        public async Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges)
-            => await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
+        public async Task<Entry> GetEntryByIdAsync(Guid id, bool trackChanges) => 
+            await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
         public async Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges) => 
             await FindByCondition(e => e.HorseId.Equals(horseId) && e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();

@@ -23,33 +23,4 @@ namespace Shared.DataTransferObjects
         [MaxLength(30, ErrorMessage = "Maximum length for the Owner Name is 30 characters.")]
         public string? Owner { get; init; }
     }
-
-    public record RaceDto(Guid Id, int CountHorses, DateTime Date, string CompetitionName);
-    public record RaceManipulationDto
-    {
-        [Required(ErrorMessage = "Count horses is a required field")]
-        [Range(5, 15)]
-        public int CountHorses { get; init; }
-
-        [Required(ErrorMessage = "Date is a required field")]
-        public DateTime Date { get; init; }
-
-        [Required(ErrorMessage = "Competition Name is a required field")]
-        [MaxLength(30, ErrorMessage = "Maximum length for the Competition Name is 30 characters.")]
-        public string? CompetitionName { get; init; }
-    }
-
-    public record EntryDto(Guid Id, int Result, double Coefficient);
-    public record EntryManipulationDto(int Result, double Coefficient);
-
-    public record BetDto(Guid Id, int BetPosition, double Rate);
-    public record BetManipulationDto
-    {
-        [Required(ErrorMessage = "Bet position is a required field")]
-        public int BetPosition { get; init; }
-
-        [Required(ErrorMessage = "Bet position is a required field")]
-        public double Rate { get; init; }
-    }
-
 }

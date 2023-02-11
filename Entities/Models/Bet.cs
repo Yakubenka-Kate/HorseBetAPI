@@ -16,10 +16,12 @@ namespace HorseBet.Models
 
         public string? Result { get; set; }
 
-        [ForeignKey(nameof(EntryId))]
+        [ForeignKey(nameof(Entry))]
         public Guid EntryId { get; set; }
         public Entry? Entry { get; set; }
 
-        //public string UserId { get; set; }
+        [ForeignKey(nameof(User))]
+        public string? UserId { get; set; }
+        public User? User { get; set; }
     }
 }

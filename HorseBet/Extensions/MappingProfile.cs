@@ -19,6 +19,8 @@ namespace HorseBet.Extensions
 
             CreateMap<Bet, BetDto>();
             CreateMap<BetManipulationDto, Bet>();
+
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }

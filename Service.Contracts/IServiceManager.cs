@@ -12,5 +12,6 @@ namespace Service.Contracts
         IRaceService RaceService { get; }
         IEntryService EntryService { get; }
         IBetService BetService { get; }
+        IAuthenticationService AuthenticationService { get; }
     }
 }
