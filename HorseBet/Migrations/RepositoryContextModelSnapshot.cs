@@ -50,7 +50,7 @@ namespace HorseBet.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bets");
+                    b.ToTable("Bets", (string)null);
                 });
 
             modelBuilder.Entity("HorseBet.Models.Entry", b =>
@@ -78,7 +78,7 @@ namespace HorseBet.Migrations
 
                     b.HasIndex("RaceId");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
                 });
 
             modelBuilder.Entity("HorseBet.Models.Horse", b =>
@@ -104,7 +104,7 @@ namespace HorseBet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Horses");
+                    b.ToTable("Horses", (string)null);
                 });
 
             modelBuilder.Entity("HorseBet.Models.Race", b =>
@@ -127,7 +127,7 @@ namespace HorseBet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Races");
+                    b.ToTable("Races", (string)null);
                 });
 
             modelBuilder.Entity("HorseBet.Models.User", b =>

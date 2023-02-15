@@ -49,7 +49,7 @@ namespace Service
         public async Task<Race> GetRaceAsync(Guid raceId, bool trackChanges)
         {
             var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
-
+           
             if (race is null)
                 throw new RaceNotFoundException(raceId);
 

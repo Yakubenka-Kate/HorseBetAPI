@@ -2,11 +2,14 @@
 using Contracts;
 using Entities.Exceptions;
 using HorseBet.Models;
+using Microsoft.AspNetCore.Identity;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,12 +20,14 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public BetService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public BetService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, UserManager<User> userManager)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<BetDto> CreateBetAsync(Guid entryId, BetManipulationDto betForCreation, bool trackChanges)
@@ -34,6 +39,25 @@ namespace Service
 
             var betEntity = _mapper.Map<Bet>(betForCreation);
 
+            var user = await _userManager.FindByIdAsync(betForCreation.UserId);
+            if (user is null)
+                throw new UserNotFoundException(betForCreation.UserId);
+
+            if (betEntity.Rate > user.Balance)
+                throw new BalanceBedRequest();
+
+            var race = await _repository.Race.GetRaceAsync(entry.RaceId, trackChanges);
+
+            if (betEntity.BetPosition > race.CountHorses || betEntity.BetPosition < 0)
+                throw new BetPositionBedRequest();
+
+            user.Balance -= betEntity.Rate;
+            await _userManager.UpdateAsync(user);
+
+            entry.Coefficient += 1;    
+
+            _repository.Entry.UpdateEntry(entry);
+            
             _repository.Bet.CreateBet(entryId, betEntity);
             await _repository.SaveAsync();
 

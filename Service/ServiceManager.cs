@@ -25,7 +25,7 @@ namespace Service
             _horseService = new Lazy<IHorseService>(() => new HorseService(repositoryManager, logger, mapper));
             _raceService = new Lazy<IRaceService>(() => new RaceService(repositoryManager, logger, mapper));
             _entryService = new Lazy<IEntryService>(() => new EntryService(repositoryManager, logger, mapper));
-            _betService = new Lazy<IBetService>(() => new BetService(repositoryManager, logger, mapper));
+            _betService = new Lazy<IBetService>(() => new BetService(repositoryManager, logger, mapper, userManager));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, configuration));
         }
 

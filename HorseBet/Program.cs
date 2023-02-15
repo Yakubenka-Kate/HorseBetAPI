@@ -37,8 +37,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options => //?
 
 var app = builder.Build();
 
-//if (app.Environment.IsProduction())
-//    app.UseHsts();
+if (app.Environment.IsProduction())
+    app.UseHsts();
 
 if (app.Environment.IsDevelopment())
 {

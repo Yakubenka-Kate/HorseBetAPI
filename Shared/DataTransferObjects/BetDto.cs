@@ -15,5 +15,6 @@ namespace Shared.DataTransferObjects
 
         [Required(ErrorMessage = "Bet position is a required field")]
         public double Rate { get; init; }
+        public string? UserId { get; init; }
     }
 }

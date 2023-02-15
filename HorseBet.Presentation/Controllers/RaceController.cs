@@ -39,6 +39,9 @@ namespace HorseBet.Presentation.Controllers
             if (race is null)
                 return BadRequest("Horse is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var createdRace = await _service.RaceService.CreateRaceAsync(race);
 
             return CreatedAtRoute(new { id = createdRace.Id }, createdRace);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HorseBet.Presentation.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using System;
@@ -47,6 +48,9 @@ namespace HorseBet.Presentation.Controllers
             if (entry is null)
                 return BadRequest("Entry is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var createdEntry = await _service.EntryService.CreateEntryAsync(raceId, horseId, entry, trackChanges: false);
 
             return CreatedAtRoute(new { raceId, horseId, id = createdEntry.Id }, createdEntry);
@@ -66,9 +70,28 @@ namespace HorseBet.Presentation.Controllers
             if (entry is null)
                 return BadRequest("Entry is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             await _service.EntryService.UpdateEntryForHorseAsync(horseId, id, entry, horseTrackChanges: false, entryTrackChanges: true);
 
             return NoContent();
+        }
+
+        [HttpPost("createEntries")]
+        public async Task<IActionResult> CreateEntries(Guid raceId, [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> horseIds)
+        {
+            await _service.EntryService.CreateFullEntry(raceId, horseIds, trackChanges: false);
+
+            return NoContent();
+        }
+
+        [HttpGet("GetResultOfRace")]
+        public async Task<IActionResult> GetResult(Guid raceId)
+        {
+            var entries = await _service.EntryService.GetResult(raceId, trackChanges: false);
+
+            return Ok(entries);
         }
 
     }

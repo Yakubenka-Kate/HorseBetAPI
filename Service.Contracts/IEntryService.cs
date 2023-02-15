@@ -15,7 +15,9 @@ namespace Service.Contracts
         Task<Entry> GetEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges);
         Task<IEnumerable<Entry>> GetEntriesForHorseAsync(Guid horseId, bool trackChanges);
         Task<EntryDto> CreateEntryAsync(Guid raceId, Guid horseId, EntryManipulationDto entryForCreation, bool trackChanges);
+        Task CreateFullEntry(Guid raceId, IEnumerable<Guid> horseIds, bool trackChanges);
         Task DeleteEntryForHorseAsync(Guid horseId, Guid id, bool trackChanges);
         Task UpdateEntryForHorseAsync(Guid horseId, Guid id, EntryManipulationDto entryForUpdate, bool horseTrackChanges, bool entryTrackChanges);
+        Task<IEnumerable<Entry>> GetResult(Guid raceIdt, bool trackChanges);
     }
 }

@@ -25,6 +25,31 @@ namespace Service
             _mapper = mapper;
         }
 
+        public async Task CreateFullEntry(Guid raceId, IEnumerable<Guid> horseIds, bool trackChanges)
+        {
+            var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
+
+            if (race is null)
+                throw new RaceNotFoundException(raceId);
+
+            if (horseIds is null)
+                throw new IdParametersBadRequestException();
+
+            var horseEntities = await _repository.Horse.GetByIdsAsync(horseIds, trackChanges);
+
+            if (horseIds.Count() != horseEntities.Count())
+                throw new CollectionByIdsBadRequestException();
+
+            if (race.CountHorses != horseEntities.Count())
+                throw new DiscrepancyBadRequest();
+
+            foreach (var horseEntity in horseEntities)
+            {
+                _repository.Entry.CreateEntry(raceId, horseEntity.Id, new Entry());
+                await _repository.SaveAsync();
+            }
+        }
+
         public async Task<EntryDto> CreateEntryAsync(Guid raceId, Guid horseId, EntryManipulationDto entryForCreation, bool trackChanges)
         {
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
@@ -123,6 +148,72 @@ namespace Service
             _mapper.Map(entryForUpdate, entryEntity);
             await _repository.SaveAsync();
 
+        }
+
+        public async Task<IEnumerable<Entry>> GetResult(Guid raceId, bool trackChanges)
+        {
+            var entries = await _repository.Entry.GetEntriesForRaceAsync(raceId, trackChanges);
+
+            if (entries is null)
+                throw new RaceNotFoundException(raceId);
+
+            var x = RandomResult(entries);
+            int j = 0;
+            foreach (var entry in entries)
+            {
+                entry.Result = x[j];
+                j++;
+                _repository.Entry.UpdateEntry(entry);
+            }
+
+            await _repository.SaveAsync();
+
+            foreach (var entry in entries)
+            {
+                var bets = await _repository.Bet.GetBetsForEntryAsunc(entry.Id, trackChanges);
+                foreach (var bet in bets)
+                {
+                    if (bet.BetPosition == entry.Result)
+                        bet.Result = "Win";
+                    else
+                        bet.Result = "Loose";
+                    _repository.Bet.UpdateBet(bet);
+                }
+            }
+
+            await _repository.SaveAsync();
+
+            return entries;
+        }
+
+        private static int[] RandomResult(IEnumerable<Entry> entries)
+        {
+            var rnd = new Random();
+            var x = new int[entries.Count()];
+
+            for (int i = 0; i < entries.Count(); i++)
+            {
+                bool contains;
+                int next;
+
+                do
+                {
+                    next = rnd.Next(1, entries.Count() + 1);
+                    contains = false;
+                    for (int index = 0; index < i; index++)
+                    {
+                        int n = x[index];
+                        if (n == next)
+                        {
+                            contains = true;
+                            break;
+                        }
+                    }
+                } while (contains);
+                x[i] = next;
+            }
+
+            return x;
         }
     }
 }

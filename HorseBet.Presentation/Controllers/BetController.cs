@@ -19,7 +19,7 @@ namespace HorseBet.Presentation.Controllers
         public BetController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetBets()
         {
             var bets = await _service.BetService.GetAllBetsAsync(trackChanges: false);
@@ -49,6 +49,9 @@ namespace HorseBet.Presentation.Controllers
             if (bet is null)
                 return BadRequest("Bet is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var createdBet = await _service.BetService.CreateBetAsync(entryId, bet, trackChanges: false);
 
             return CreatedAtRoute(new { entryId, id = createdBet.Id }, createdBet);
@@ -67,6 +70,9 @@ namespace HorseBet.Presentation.Controllers
         {
             if (bet is null)
                 return BadRequest("Entry is null");
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
 
             await _service.BetService.UpdateBetForEntryAsync(entryId, id, bet, entryTrackChanges: false, betTrackChanges: true);
 

@@ -11,7 +11,7 @@ namespace Shared.DataTransferObjects
     public record RaceManipulationDto
     {
         [Required(ErrorMessage = "Count horses is a required field")]
-        [Range(5, 15)]
+        [Range(1, 15)]
         public int CountHorses { get; init; }
 
         [Required(ErrorMessage = "Date is a required field")]

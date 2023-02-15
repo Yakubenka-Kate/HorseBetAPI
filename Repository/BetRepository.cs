@@ -21,6 +21,8 @@ namespace Repository
             Create(bet);
         }
 
+        public void UpdateBet(Bet bet) => Update(bet);
+
         public void DeleteBet(Bet bet) => Delete(bet);
 
         public async Task<IEnumerable<Bet>> GetAllBetsAsunc(bool trackChanges)

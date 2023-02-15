@@ -14,5 +14,6 @@ namespace Contracts
         Task<IEnumerable<Bet>> GetBetsForEntryAsunc(Guid entryId, bool trackChanges);
         void CreateBet(Guid entryId, Bet bet);
         void DeleteBet(Bet bet);
+        void UpdateBet(Bet bet);
     }
 }

@@ -63,6 +63,10 @@ namespace HorseBet.Presentation.Controllers
         public async Task<IActionResult> CreateHorseCollection([FromBody] IEnumerable<HorseManipulationDto> horseCollection)
         {
             var result = await _service.HorseService.CreateHorsesCollectionAsync(horseCollection);
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             return CreatedAtRoute(new { result.ids }, result.horses);
         }
 

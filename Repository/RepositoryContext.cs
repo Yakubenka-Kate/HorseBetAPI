@@ -20,7 +20,7 @@ namespace Repository
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new RoleConfiguration());
+            builder.ApplyConfiguration(new RoleConfiguration());            
         }
 
         public DbSet<Horse>? Horses { get; set; }
