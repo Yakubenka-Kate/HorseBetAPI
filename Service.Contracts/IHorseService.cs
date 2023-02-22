@@ -1,5 +1,6 @@
-﻿using HorseBet.Models;
+﻿using Entities.Models;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;

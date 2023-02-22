@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace HorseBet.Presentation.Controllers
         [HttpGet("GetResultOfRace")]
         public async Task<IActionResult> GetResult(Guid raceId)
         {
-            var entries = await _service.EntryService.GetResult(raceId, trackChanges: false);
+            var entries = await _service.EntryService.GetResult(raceId, trackChanges: true);
 
             return Ok(entries);
         }

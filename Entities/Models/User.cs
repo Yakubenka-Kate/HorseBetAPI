@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HorseBet.Models
+namespace Entities.Models
 {
     public class User : IdentityUser
     {

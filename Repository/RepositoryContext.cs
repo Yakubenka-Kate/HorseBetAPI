@@ -1,4 +1,4 @@
-﻿using HorseBet.Models;
+﻿using Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repository.Configuration;

@@ -8,9 +8,5 @@ namespace Shared.DataTransferObjects
 {
 
     public record EntryDto(Guid Id, int Result, double Coefficient);
-    public record EntryManipulationDto
-    {
-        public int Result { get; set; } 
-        public double Coefficient { get; set; }
-    }
+
 }

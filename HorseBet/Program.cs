@@ -1,4 +1,4 @@
-using Contracts;
+ using Contracts;
 using HorseBet.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;

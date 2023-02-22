@@ -1,5 +1,6 @@
-﻿using HorseBet.Models;
+﻿using Entities.Models;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace Service.Contracts
         Task<BetDto> CreateBetAsync(Guid entryId, BetManipulationDto betForCreation, bool trackChanges);
         Task DeleteBetForEntryAsync(Guid entryId, Guid id, bool trackChanges);
         Task UpdateBetForEntryAsync(Guid entryId, Guid id, BetManipulationDto betForUpdate, bool entryTrackChanges, bool betTrackChanges);
+        Task<IEnumerable<Bet>> GetAllBetsForUserAsync(string userId, bool trackChanges);
     }
 }

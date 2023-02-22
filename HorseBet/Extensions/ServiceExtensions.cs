@@ -1,5 +1,5 @@
 ﻿using Contracts;
-using HorseBet.Models;
+using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

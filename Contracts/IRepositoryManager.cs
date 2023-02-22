@@ -12,7 +12,8 @@ namespace Contracts
         IRaceRepository Race{ get; }
         IEntryRepository Entry{ get; }
         IBetRepository Bet{ get; }
-
+        IRequestRepository Request{ get; }
+        IUserRepository User{ get; }
         Task SaveAsync();
     }
 }
