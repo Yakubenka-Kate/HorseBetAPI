@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace HorseBet.Presentation.Controllers
         private readonly IServiceManager _service;
 
         public BetController(IServiceManager service) => _service = service;
+
 
         [HttpGet]
         //[Authorize]
@@ -52,7 +54,7 @@ namespace HorseBet.Presentation.Controllers
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var createdBet = await _service.BetService.CreateBetAsync(entryId, bet, trackChanges: false);
+            var createdBet = await _service.BetService.CreateBetAsync(entryId, bet, trackChanges: true);
 
             return CreatedAtRoute(new { entryId, id = createdBet.Id }, createdBet);
         }

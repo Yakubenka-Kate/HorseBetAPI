@@ -1,5 +1,6 @@
-﻿using HorseBet.Models;
+﻿using Entities.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace Contracts
         void CreateBet(Guid entryId, Bet bet);
         void DeleteBet(Bet bet);
         void UpdateBet(Bet bet);
+        Task<IEnumerable<Bet>> GetAllBetsForUserAsync(string userId, bool trackChanges);
+        Task<double> GetRatesForEntryAsync(IEnumerable<Bet> bet, bool trackChanges);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using HorseBet.Models;
+using Entities.Models;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 
 namespace HorseBet.Extensions
 {

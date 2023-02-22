@@ -1,9 +1,10 @@
 ﻿using Entities.Exceptions;
-using HorseBet.Models;
+using Entities.Models;
 using HorseBet.Presentation.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
-using HorseBet.Models;
+using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,9 +50,9 @@ namespace Service
         public async Task<Race> GetRaceAsync(Guid raceId, bool trackChanges)
         {
             var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
-           
+
             if (race is null)
-                throw new RaceNotFoundException(raceId);
+                throw new NotFoundException($"The race with id: {raceId} doesn't exist in the database!");
 
             return race;
         }

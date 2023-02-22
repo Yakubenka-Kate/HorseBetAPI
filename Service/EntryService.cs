@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
-using HorseBet.Models;
+using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,18 +31,18 @@ namespace Service
             var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
 
             if (race is null)
-                throw new RaceNotFoundException(raceId);
+                throw new NotFoundException($"The race with id: {raceId} doesn't exist in the database!");
 
             if (horseIds is null)
-                throw new IdParametersBadRequestException();
+                throw new BadRequestException("Parameter ids is null");
 
             var horseEntities = await _repository.Horse.GetByIdsAsync(horseIds, trackChanges);
 
             if (horseIds.Count() != horseEntities.Count())
-                throw new CollectionByIdsBadRequestException();
+                throw new BadRequestException("Collection count mismatch comparing to ids.");
 
             if (race.CountHorses != horseEntities.Count())
-                throw new DiscrepancyBadRequest();
+                throw new BadRequestException("The declared number of horses does not match the entered data");
 
             foreach (var horseEntity in horseEntities)
             {
@@ -55,12 +56,12 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
             
             if (horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             var race = await _repository.Race.GetRaceAsync(raceId, trackChanges);
 
             if (race is null)
-                throw new RaceNotFoundException(raceId);
+                throw new NotFoundException($"The race with id: {raceId} doesn't exist in the database!");
 
             var entryEntity = _mapper.Map<Entry>(entryForCreation);
 
@@ -77,12 +78,12 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             var entryForHorse = await _repository.Entry.GetEntryForHorseAsync(horseId, id, trackChanges);
 
             if (entryForHorse is null)
-                throw new EntryNotFoundException(id);
+                throw new NotFoundException($"The entry with id: {id} doesn't exist in the database!");
 
             _repository.Entry.DeleteEntry(entryForHorse);
             await _repository.SaveAsync();
@@ -100,7 +101,7 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             var entries = await _repository.Entry.GetEntriesForHorseAsync(horseId, trackChanges);
 
@@ -112,7 +113,7 @@ namespace Service
             var entry = await _repository.Entry.GetEntryByIdAsync(id, trackChanges);
 
             if (entry is null)
-                throw new EntryNotFoundException(id);
+                throw new NotFoundException($"The entry with id: {id} doesn't exist in the database!");
 
             return entry;
         }
@@ -122,12 +123,12 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if(horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             var entry = await _repository.Entry.GetEntryForHorseAsync(horseId, id, trackChanges);
 
             if (entry is null)
-                throw new EntryNotFoundException(id);
+                throw new NotFoundException($"The entry with id: {id} doesn't exist in the database!");
 
             return entry;
         }
@@ -138,12 +139,12 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, horseTrackChanges);
 
             if (horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             var entryEntity = await _repository.Entry.GetEntryForHorseAsync(horseId, id, entryTrackChanges);
 
             if (entryEntity is null)
-                throw new EntryNotFoundException(id);
+                throw new NotFoundException($"The entry with id: {id} doesn't exist in the database!");
 
             _mapper.Map(entryForUpdate, entryEntity);
             await _repository.SaveAsync();
@@ -155,7 +156,7 @@ namespace Service
             var entries = await _repository.Entry.GetEntriesForRaceAsync(raceId, trackChanges);
 
             if (entries is null)
-                throw new RaceNotFoundException(raceId);
+                throw new NotFoundException($"The race with id: {raceId} doesn't exist in the database!");
 
             var x = RandomResult(entries);
             int j = 0;
@@ -168,20 +169,27 @@ namespace Service
 
             await _repository.SaveAsync();
 
+            var coef = _repository.Request.GetAllRatesForRaceId(raceId) / _repository.Request.GetAllWinRatesForRaceId(raceId);
+
             foreach (var entry in entries)
             {
                 var bets = await _repository.Bet.GetBetsForEntryAsunc(entry.Id, trackChanges);
                 foreach (var bet in bets)
                 {
                     if (bet.BetPosition == entry.Result)
+                    {
                         bet.Result = "Win";
+                        var user = await _repository.User.GetUserAsync(bet.UserId, trackChanges);
+                        user.Balance += (bet.Rate * coef);
+                        _repository.User.UpdateUser(user);
+                    }                      
                     else
-                        bet.Result = "Loose";
-                    _repository.Bet.UpdateBet(bet);
-                }
-            }
+                        bet.Result = "Lose";
 
-            await _repository.SaveAsync();
+                    _repository.Bet.UpdateBet(bet);                                  
+                    await _repository.SaveAsync();
+                }
+            }  
 
             return entries;
         }
@@ -212,8 +220,9 @@ namespace Service
                 } while (contains);
                 x[i] = next;
             }
+            var y = new int[3] { 1, 3, 2};
 
-            return x;
+            return y;
         }
     }
 }

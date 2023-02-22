@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
-using HorseBet.Models;
+using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ManipulationDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace Service
         public async Task<(IEnumerable<HorseDto> horses, string ids)> CreateHorsesCollectionAsync(IEnumerable<HorseManipulationDto> horseCollection)
         {
             if (horseCollection is null)
-                throw new HorseCollectionBadRequest();
+                throw new BadRequestException("Horse collection sent from a client is null.");
 
             var horseEntities = _mapper.Map<IEnumerable<Horse>>(horseCollection);
             foreach (var horse in horseEntities)
@@ -63,7 +64,7 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");   
 
             _repository.Horse.DeleteHorse(horse);
             await _repository.SaveAsync();
@@ -81,12 +82,12 @@ namespace Service
         public async Task<IEnumerable<HorseDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
         {
             if (ids is null)
-                throw new IdParametersBadRequestException();
+                throw new BadRequestException("Parameter ids is null");
 
             var horseEntities = await _repository.Horse.GetByIdsAsync(ids, trackChanges);
 
-            if(ids.Count() != horseEntities.Count())
-                throw new CollectionByIdsBadRequestException();
+            if (ids.Count() != horseEntities.Count())
+                throw new BadRequestException("Collection count mismatch comparing to ids.");
 
             var horsesToReturn = _mapper.Map<IEnumerable<HorseDto>>(horseEntities);
 
@@ -98,7 +99,7 @@ namespace Service
             var horse = await _repository.Horse.GetHorseAsync(horseId, trackChanges);
 
             if (horse is null)               
-                throw new HorseNotFoundException(horseId);
+                throw new NotFoundException($"The horse with id: {horseId} doesn't exist in the database!");
 
             return horse;
         }

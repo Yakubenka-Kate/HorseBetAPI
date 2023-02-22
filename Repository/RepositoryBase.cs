@@ -1,5 +1,7 @@
 ﻿using Contracts;
+using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DataTransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,5 +36,6 @@ namespace Repository
         public void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
 
         public void Update(T entity) => RepositoryContext.Set<T>().Update(entity);
+
     }
 }

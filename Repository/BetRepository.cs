@@ -1,7 +1,9 @@
 ﻿using Contracts;
-using HorseBet.Models;
+using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DataTransferObjects;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,5 +35,12 @@ namespace Repository
 
         public async Task<IEnumerable<Bet>> GetBetsForEntryAsunc(Guid entryId, bool trackChanges) 
             => await FindByCondition(b => b.EntryId.Equals(entryId), trackChanges).ToListAsync();
+
+        public async Task<IEnumerable<Bet>> GetAllBetsForUserAsync(string userId, bool trackChanges)
+            => await FindByCondition(b => b.UserId.Equals(userId), trackChanges).ToListAsync();
+
+        public async Task<double> GetRatesForEntryAsync(IEnumerable<Bet> bet, bool trackChanges)
+            => await FindByCondition(b => bet.Contains(b), trackChanges).Where(b => b.BetPosition == 1).SumAsync(b => b.Rate);
+
     }
 }
